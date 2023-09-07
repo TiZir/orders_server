@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    build:
+      context: ./
+      dockerfile: db.Dockerfile
+    restart: always
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./internal/pg/data:/var/lib/postgresql/data
+  nats-streaming:
+    restart: always
+    image: nats-streaming:0.25.5-alpine3.18
+    ports:
+      - 4222:4222
+    command:
+    - "--cluster_id"
+    - "testcluster"
+  main:
+    depends_on:
+      - postgres
+      - nats-streaming
+    build:
+      context: ./
+      dockerfile: app.Dockerfile
+    container_name: main
+    ports:
+      - "9090:9090"
+    environment:
+      HTTP_ADDR: ":9090"
+      PG_URL: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
