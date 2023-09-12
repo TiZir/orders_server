@@ -7,13 +7,15 @@ services:
       dockerfile: db.Dockerfile
     restart: always
     ports:
-      - 5433:5432
+      - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-      - ./internal/pg/data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - default
   nats-streaming:
     restart: always
     image: nats-streaming:0.25.5-alpine3.18
@@ -29,9 +31,14 @@ services:
     build:
       context: ./
       dockerfile: app.Dockerfile
+    restart: always
     container_name: main
     ports:
       - "9090:9090"
     environment:
-      HTTP_ADDR: ":9090"
-      PG_URL: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+      - HTTP_ADDR=${PORT}
+      - PG_URL=${POSTGRES_URL}
+      - PG_HOST=${POSTGRES_HOST}
+      - PG_PORT=${POSTGRES_PORT}
+volumes:
+  db_data:

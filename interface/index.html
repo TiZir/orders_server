@@ -3,72 +3,35 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Order Details</title>
 </head>
 
 <body>
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-
-            </div>
-        </div>
-    </header>
-
-    <div class="container mt-3">
-        <div class="row justify-content-md-center">
-            <div class="col-md-auto">
-                <div class="d-flex">
-                    <input class="form-control me-2" type="search" id="search" placeholder="Search order by ID"
-                        aria-label="Search">
-                    <button class="btn btn-outline-success" type="button" onclick="submitHandler()">Search</button>
-                </div>
-            </div>
-        </div>
+    <div>
+        <input type="search" id="search" placeholder="Order ID">
+        <button type="button" onclick="submitHandler()">Search</button>
     </div>
 
-    <div class="container mt-3">
-        <div class="row justify-content-md-center">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">OrderUID</th>
-                        <th scope="col">Entry</th>
-                        <th scope="col">TotalPrice</th>
-                        <th scope="col">CustomerID</th>
-                        <th scope="col">TrackNumber</th>
-                        <th scope="col">DeliveryService</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>{{ .OrderUID }}</td>
-                        <td>{{ .Entry }}</td>
-                        <td>{{ .TotalPrice }}</td>
-                        <td>{{ .CustomerID }}</td>
-                        <td>{{ .TrackNumber }}</td>
-                        <td>{{ .DeliveryService }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div>
+        <h2>Order Details</h2>
+        <pre id="orderData">{{ .orderData }}</pre>
     </div>
 
 
 </body>
+
 <script>
-    function submitHandler() {
+    async function submitHandler() {
+        const orderData = document.getElementById("orderData");
         let searchValue = document.getElementById('search').value;
         if (searchValue == "") {
-            alert("Input order id value!");
+            alert("Input order id!");
         } else {
             window.location = "http://localhost:9090/orders/" + searchValue
+            const response = await fetch("http://localhost:9090/orders/" + searchValue);
+            const order = await response.json();
+            orderData.textContent = JSON.stringify(order, null, 2);
         }
     }
 </script>
