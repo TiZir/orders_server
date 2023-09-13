@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+</head>
+<body>
+    <div>
+        <input type="search" id="search" placeholder="Order ID">
+        <button type="button" onclick="submitHandler()">Search</button>
+    </div>
+</body>
+<script>
+    function submitHandler() {
+        let searchValue = document.getElementById('search').value;
+        if (searchValue == "") {
+            alert("Input order id!");
+        } else {
+            window.open("http://localhost:9090/orders/" + searchValue, "_blank");
+        }
+    }
+</script>
+</html>
