@@ -27,7 +27,7 @@ CREATE TABLE public.delivery (
 
 CREATE TABLE public.payment (
   transaction   varchar(256) PRIMARY KEY,
-    request_id    int,
+  request_id    varchar(256),
   currency      varchar(256), 
   provider      varchar(256),
   amount        int,

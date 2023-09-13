@@ -9,8 +9,6 @@ RUN apk update && \
 COPY ./go.mod go.sum ./
 RUN go mod download && go mod verify
 
-#RUN go get github.com/githubnemo/CompileDaemon
-
 COPY . .
 COPY ./entrypoint.sh /entrypoint.sh
 

@@ -16,6 +16,7 @@ services:
       - db_data:/var/lib/postgresql/data
     networks:
       - default
+      
   nats-streaming:
     restart: always
     image: nats-streaming:0.25.5-alpine3.18
@@ -24,6 +25,7 @@ services:
     command:
     - "--cluster_id"
     - "testcluster"
+
   main:
     depends_on:
       - postgres
@@ -37,8 +39,10 @@ services:
       - "9090:9090"
     environment:
       - HTTP_ADDR=${PORT}
+      - NT_URL=${NATS_URL}
       - PG_URL=${POSTGRES_URL}
       - PG_HOST=${POSTGRES_HOST}
       - PG_PORT=${POSTGRES_PORT}
+      
 volumes:
   db_data:

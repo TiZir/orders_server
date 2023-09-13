@@ -7,13 +7,13 @@ import (
 )
 
 func main() {
-	conn, err := broker.Publish()
+	conn := broker.Publish()
+
+	//trash data test
+	err := conn.Publish("orders", []byte("trash"))
 	if err != nil {
-		log.Println(err)
+		log.Printf("error nats publish: %v\n", err)
 	}
-	err = conn.Publish("orders", []byte("trash"))
-	if err != nil {
-		log.Println("ERROR: conn.Publish:", err)
-	}
+
 	defer conn.Close()
 }

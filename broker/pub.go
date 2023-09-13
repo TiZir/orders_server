@@ -3,16 +3,14 @@ package broker
 import (
 	"encoding/json"
 	"log"
+	"os"
 	"time"
 
 	"github.com/TiZir/orders_server/db"
-
 	"github.com/nats-io/nats.go"
 )
 
-// Тестовый скрипт публикации данных Order
-func Publish() (*nats.Conn, error) {
-
+func Publish() *nats.Conn {
 	item1 := db.Item{
 		ChrtID: 1, TrackNumber: "WBILMTESTTRACKRR", Price: 10, Rid: "RID 1", Name: "T-Shirt",
 		Sale: 9, Size: "S", TotalPrice: 13, NmID: 1, Brand: "Adidas", Status: 1,
@@ -46,20 +44,19 @@ func Publish() (*nats.Conn, error) {
 
 	orderData, err := json.Marshal(order)
 	if err != nil {
-		log.Println(err)
+		log.Printf("error marshal data to nats: %v\n", err)
 	}
 
-	// публикация данных:
-	conn, err := nats.Connect("nats://nats-streaming:4222")
+	conn, err := nats.Connect(os.Getenv("NT_URL"))
 	if err != nil {
-		log.Println(err)
-		return conn, err
+		log.Printf("error conn to nats: %v\n", err)
+		return conn
 	}
 	time.Sleep(5 * time.Second)
 	err = conn.Publish("orders", orderData)
 	if err != nil {
-		log.Println("ERROR: conn.Publish:", err)
-		return conn, err
+		log.Printf("error nats publish: %v\n", err)
+		return conn
 	}
-	return conn, nil
+	return conn
 }

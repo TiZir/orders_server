@@ -1,11 +1,5 @@
 package db
 
-import (
-	"database/sql/driver"
-	"encoding/json"
-	"fmt"
-)
-
 type Delivery struct {
 	Name    string `json:"name"`
 	Phone   string `json:"phone"`
@@ -14,14 +8,6 @@ type Delivery struct {
 	Address string `json:"address"`
 	Region  string `json:"region"`
 	Email   string `json:"email"`
-}
-
-func (d Delivery) Value() (driver.Value, error) {
-	return json.Marshal(d)
-}
-
-func (d *Delivery) Scan(src interface{}) error {
-	return json.Unmarshal(src.([]byte), &d)
 }
 
 type Payment struct {
@@ -37,14 +23,6 @@ type Payment struct {
 	CustomFee    int    `json:"custom_fee"`
 }
 
-func (p Payment) Value() (driver.Value, error) {
-	return json.Marshal(p)
-}
-
-func (p *Payment) Scan(src interface{}) error {
-	return json.Unmarshal(src.([]byte), &p)
-}
-
 type Item struct {
 	ChrtID      int    `json:"chrt_id"`
 	TrackNumber string `json:"track_number"`
@@ -57,14 +35,6 @@ type Item struct {
 	NmID        int    `json:"nm_id"`
 	Brand       string `json:"brand"`
 	Status      int    `json:"status"`
-}
-
-func (i Item) Value() (driver.Value, error) {
-	return json.Marshal(i)
-}
-
-func (i *Item) Scan(src interface{}) error {
-	return json.Unmarshal(src.([]byte), &i)
 }
 
 type Order struct {
@@ -83,24 +53,5 @@ type Order struct {
 	DateCreated       string   `json:"date_created"`
 	OofShard          string   `json:"oof_shard"`
 }
+
 type Items []Item
-
-func (is *Items) Scan(value interface{}) error {
-	bytes, ok := value.([]byte)
-	if !ok {
-		return fmt.Errorf("error casting value to bytes")
-	}
-
-	var items []Item
-	err := json.Unmarshal(bytes, &items)
-	if err != nil {
-		return err
-	}
-
-	*is = items
-	return nil
-}
-
-func (is Items) Value() (driver.Value, error) {
-	return json.Marshal(is)
-}
