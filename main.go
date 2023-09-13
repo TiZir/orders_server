@@ -31,6 +31,7 @@ func orderPage(w http.ResponseWriter, r *http.Request) {
 	if ok {
 		order, ok = data.(db.Order)
 		if !ok {
+			//ошибки для ответа в json
 			log.Printf("error type assertion from cash: %v\n", err)
 			return
 		}
